@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 
 @Documented
 @Constraint(validatedBy = AgeValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidAge {
     String message() default "Invalid age";

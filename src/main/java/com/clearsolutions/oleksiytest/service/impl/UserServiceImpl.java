@@ -1,5 +1,6 @@
 package com.clearsolutions.oleksiytest.service.impl;
 
+import com.clearsolutions.oleksiytest.exception.EntityNotFoundException;
 import com.clearsolutions.oleksiytest.model.User;
 import com.clearsolutions.oleksiytest.service.UserService;
 import org.springframework.stereotype.Service;
@@ -35,21 +36,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        if (findByEmail(user.getEmail()) != null) {
+        try {
+            findByEmail(user.getEmail());
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists.");
+        } catch (EntityNotFoundException e) {
+            User newUser = new User(
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getBirthDate(),
+                    user.getAddress(),
+                    user.getPhoneNumber()
+            );
+
+            users.add(newUser);
+            return newUser;
         }
-
-        User newUser = new User(
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getBirthDate(),
-                user.getAddress(),
-                user.getPhoneNumber()
-        );
-
-        users.add(newUser);
-        return newUser;
     }
 
     @Override
@@ -59,23 +61,20 @@ public class UserServiceImpl implements UserService {
                 return user;
             }
         }
-        return null;
+        throw new EntityNotFoundException("Entity with this email are not found");
     }
 
     @Override
     public User update(User user) {
         User userToUpdate = findByEmail(user.getEmail());
 
-        if (userToUpdate != null) {
-            userToUpdate.setEmail(user.getEmail());
-            userToUpdate.setFirstName(user.getFirstName());
-            userToUpdate.setLastName(user.getLastName());
-            userToUpdate.setBirthDate(user.getBirthDate());
-            userToUpdate.setAddress(user.getAddress());
-            userToUpdate.setPhoneNumber(user.getPhoneNumber());
-            return userToUpdate;
-        }
-        return null;
+        userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setLastName(user.getLastName());
+        userToUpdate.setBirthDate(user.getBirthDate());
+        userToUpdate.setAddress(user.getAddress());
+        userToUpdate.setPhoneNumber(user.getPhoneNumber());
+        return userToUpdate;
     }
 
     @Override
@@ -87,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsersByBirthRange(LocalDate from, LocalDate to) {
         if (from.isAfter(to)) {
-            throw new RuntimeException("\"from\" must be before \"to\"");
+            throw new RuntimeException("\"from\" must be less than \"to\"");
         }
 
         List<User> userList = new ArrayList<>();
