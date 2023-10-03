@@ -19,9 +19,19 @@ public @interface ValidAge {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    long minimumAge();
 }
 
 class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
+
+    private long minimumAge;
+
+    @Override
+    public void initialize(ValidAge constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+        this.minimumAge = constraintAnnotation.minimumAge();
+    }
 
     @Override
     public boolean isValid(LocalDate dateOfBirth, ConstraintValidatorContext context) {
@@ -30,6 +40,6 @@ class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
         }
 
         long age = ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
-        return age >= 18;
+        return age >= minimumAge;
     }
 }

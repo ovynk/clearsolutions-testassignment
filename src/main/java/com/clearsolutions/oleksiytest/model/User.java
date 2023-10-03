@@ -25,7 +25,7 @@ public class User {
     @NotBlank
     private String lastName;
 
-    @ValidAge
+    @ValidAge(minimumAge = 18)
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate birthDate;
 
