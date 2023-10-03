@@ -12,6 +12,8 @@ public interface UserService {
 
     User update(User user);
 
+    User patch(String email, User user);
+
     void delete(User user);
 
     List<User> getUsersByBirthRange(LocalDate from, LocalDate to);

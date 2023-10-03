@@ -3,8 +3,10 @@ package com.clearsolutions.oleksiytest.service.impl;
 import com.clearsolutions.oleksiytest.exception.EntityNotFoundException;
 import com.clearsolutions.oleksiytest.model.User;
 import com.clearsolutions.oleksiytest.service.UserService;
+import com.clearsolutions.oleksiytest.utils.NullAwareBeanUtilsBean;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +77,19 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setAddress(user.getAddress());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         return userToUpdate;
+    }
+
+    @Override
+    public User patch(String email, User user) {
+        User userToPatch = findByEmail(email);
+
+        try {
+            new NullAwareBeanUtilsBean().copyProperties(userToPatch, user);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            return null;
+        }
+
+        return userToPatch;
     }
 
     @Override
