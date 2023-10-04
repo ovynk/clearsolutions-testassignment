@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(User user) {
-        User userToDelete = findByEmail(user.getEmail());
+    public void delete(String email) {
+        User userToDelete = findByEmail(email);
         users.remove(userToDelete);
     }
 
