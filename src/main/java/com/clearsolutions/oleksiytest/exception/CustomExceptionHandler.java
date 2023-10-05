@@ -1,17 +1,14 @@
 package com.clearsolutions.oleksiytest.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public final ResponseEntity<ErrorResponse> handleEntityNotFoundException
@@ -31,6 +28,25 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<ErrorResponse> handleValidAgeException
             (ValidAgeException ex, HttpServletRequest request) {
         ErrorResponse error = getErrorResponse(ex, request, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public final ResponseEntity<ErrorResponse> handleRuntimeException
+            (RuntimeException ex, HttpServletRequest request) {
+        ErrorResponse error = getErrorResponse(ex, request, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException
+            (MethodArgumentNotValidException ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getClass().getSimpleName(),
+                "Argument failed validation",
+                request.getRequestURI()
+        );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 

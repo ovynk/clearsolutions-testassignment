@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsersByBirthRange(LocalDate from, LocalDate to) {
         if (from.isAfter(to)) {
-            throw new RuntimeException("\"from\" must be less than \"to\"");
+            throw new RuntimeException("'from' must be less than 'to'");
         }
 
         List<User> userList = new ArrayList<>();
