@@ -25,7 +25,7 @@ public class User {
     @NotBlank
     private String lastName;
 
-    @ValidAge(minimumAge = 18)
+    @ValidAge(minimumAge = 18, message = "Minimum age must be 18 years old or bigger")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

@@ -1,5 +1,6 @@
 package com.clearsolutions.oleksiytest.annotation;
 
+import com.clearsolutions.oleksiytest.exception.ValidAgeException;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -40,6 +41,10 @@ class AgeValidator implements ConstraintValidator<ValidAge, LocalDate> {
         }
 
         long age = ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
-        return age >= minimumAge;
+        if (age >= minimumAge) {
+            return true;
+        }
+
+        throw new ValidAgeException("Age must be at least 18 years old");
     }
 }
